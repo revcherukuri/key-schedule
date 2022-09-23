@@ -3,6 +3,11 @@ public class KeySchedule {
     public static void main (String [] args) {
         KeyUtils k = new KeyUtils();
         int [] key = k.getKey();
+        int [] pc1 = k.getPc1();
+
+        //perform pc1 table permutation on 64 bit key to get 56 bit key
+        key = simplePermutation(key, pc1);
+
         int [] pc2 = k.getPc2();
 
         int [] left = new int [(key.length / 2)];
@@ -23,7 +28,7 @@ public class KeySchedule {
     }
 
     public static void subKey (int [] left, int [] right, int [] pc) {
-
+        //number of left shifts is dependant on index
         int [] shifts = {1, 1, 2, 2, 2, 2, 2, 2,
                 1, 2, 2, 2, 2, 2, 2, 1};
 
@@ -31,7 +36,7 @@ public class KeySchedule {
         int tempR;
         for (int i = 0; i < 16; i++) {
 
-//            shift bits to left one or two indices based on key schedule rule
+//            shift bits
             for (int l = 0; l < shifts[i]; l++) {
                 tempL = left[0];
                 tempR = right[0];
@@ -74,5 +79,13 @@ public class KeySchedule {
             System.out.println();
 
         }
+    }
+
+    public static int[] simplePermutation(int [] key, int [] pc1) {
+        int [] key56 = new int[56];
+        for (int i = 0; i < pc1.length; i++) {
+            key56[i] = key[pc1[i]-1];
+        }
+        return key56;
     }
 }
